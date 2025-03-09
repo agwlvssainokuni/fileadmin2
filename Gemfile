@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "activesupport"
+gem 'activesupport'
 
 group :test do
   gem 'rake'
@@ -10,5 +10,5 @@ group :test do
 end
 
 group :development do
-  gem "irb"
+  gem 'irb'
 end
