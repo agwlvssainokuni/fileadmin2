@@ -44,7 +44,7 @@ module FileAdmin
       def rm(file, dry_run = false)
         @logger.debug("processing: rm %s", file)
         begin
-          File.unlink(file, :noop => dry_run)
+          FileUtils.rm(file, :noop => dry_run)
           return true
         rescue Exception => err
           @logger.error("rm %s: NG, class=%s, message=%s",
@@ -86,12 +86,11 @@ module FileAdmin
       # ファイルの所有者を変更する。
       def chown(owner, path, dry_run = false)
         @logger.debug("processing: chown %s %s", owner, path)
-        return true if dry_run
         begin
           og = owner.split(":")
-          u = Etc.getpwnam(og[0])
-          g = og.length < 2 ? -1 : Etc.getgrnam(og[1])
-          File.chown(u.uid, g.gid, path)
+          u = og[0]
+          g = og.length < 2 ? nil : og[1]
+          FileUtils.chown(u, g, path, :noop => dry_run)
           return true
         rescue Exception => err
           @logger.error("chown %s %s: NG, class=%s, message=%s",
