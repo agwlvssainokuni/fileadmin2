@@ -57,6 +57,7 @@ GEM
     rspec-support (3.13.2)
     securerandom (0.4.1)
     stringio (3.1.5)
+    syslog (0.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uri (1.0.3)
@@ -71,6 +72,7 @@ DEPENDENCIES
   irb
   rake
   rspec
+  syslog
 
 BUNDLED WITH
    2.6.2
