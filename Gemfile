@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gem 'syslog'
 gem 'activesupport'
+gem 'activemodel'
 
 group :test do
   gem 'rake'
