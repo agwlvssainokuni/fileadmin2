@@ -57,6 +57,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.2)
+    rubyzip (2.4.1)
     securerandom (0.4.1)
     stringio (3.1.5)
     syslog (0.2.0)
@@ -75,6 +76,7 @@ DEPENDENCIES
   irb
   rake
   rspec
+  rubyzip
   syslog
 
 BUNDLED WITH

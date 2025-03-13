@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'syslog'
+gem 'rubyzip'
 gem 'activesupport'
 gem 'activemodel'
 
