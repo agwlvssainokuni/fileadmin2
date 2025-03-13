@@ -15,10 +15,9 @@
 #  limitations under the License.
 #
 
-require 'etc'
-require 'open3'
 require 'fileutils'
 require 'pathname'
+require 'zip'
 
 module FileAdmin
   module Helper
@@ -66,19 +65,27 @@ module FileAdmin
       # リストで指定されたファイル/ディレクトリを対象として
       # ZIPコマンドを実行する。
       def exec_zip(arcfile, filelist, move, dry_run = false)
-        zip_opt = (move ? "-mr" : "-r")
-        @logger.debug("processing: zip %s %s %s",
-                      zip_opt, arcfile, filelist * " ")
+        @logger.debug("processing: zip %s %s",
+                      arcfile, filelist * " ")
         return true if dry_run
-        out, status = Open3.popen2e("zip", zip_opt, arcfile, "-@") { |si, so, th|
-          filelist.each { |file| si.puts(file) }
-          si.close_write
-          [so.readlines(nil), th.value]
-        }
-        unless status.success?
-          @logger.error("zip %s %s %s: NG, status=%d, out=%s",
-                        zip_opt, arcfile, filelist * " ", status, out)
+        begin
+          Zip::File.open(arcfile, Zip::File::CREATE) { |zipfile|
+            filelist.each { |file| zipfile.add(file, file) }
+          }
+        rescue Exception => err
+          @logger.error("zip %s %s: NG, class=%s, message=%s",
+                        arcfile, filelist * " ", err.class, err.message)
           return false
+        end
+        if move
+          @logger.debug("processing: rm %s", filelist * " ")
+          begin
+            FileUtils.rm(filelist, :noop => dry_run)
+          rescue Exception => err
+            @logger.error("rm %s: NG, class=%s, message=%s",
+                          filelist * " ", err.class, err.message)
+            return false
+          end
         end
         return true
       end
