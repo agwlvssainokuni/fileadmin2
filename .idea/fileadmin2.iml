@@ -12,7 +12,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
-      <library name="activemodel (v8.0.1) [path][gem]" type="rubylib">
+      <library name="activemodel (v8.0.2) [path][gem]" type="rubylib">
         <properties>
           <option name="additionalInfo">
             <AdditionalInfo>
@@ -29,20 +29,20 @@
               <option value="lib" />
             </list>
           </option>
-          <option name="url" value="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activemodel-8.0.1" />
-          <option name="version" value="8.0.1" />
+          <option name="url" value="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activemodel-8.0.2" />
+          <option name="version" value="8.0.2" />
         </properties>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activemodel-8.0.1/lib" />
+          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activemodel-8.0.2/lib" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activemodel-8.0.1/lib" />
+          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activemodel-8.0.2/lib" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="activesupport (v8.0.1) [path][gem]" type="rubylib">
+      <library name="activesupport (v8.0.2) [path][gem]" type="rubylib">
         <properties>
           <option name="additionalInfo">
             <AdditionalInfo>
@@ -59,15 +59,15 @@
               <option value="lib" />
             </list>
           </option>
-          <option name="url" value="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activesupport-8.0.1" />
-          <option name="version" value="8.0.1" />
+          <option name="url" value="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activesupport-8.0.2" />
+          <option name="version" value="8.0.2" />
         </properties>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activesupport-8.0.1/lib" />
+          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activesupport-8.0.2/lib" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activesupport-8.0.1/lib" />
+          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/activesupport-8.0.2/lib" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -496,7 +496,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="minitest (v5.25.4) [path][gem]" type="rubylib">
+      <library name="minitest (v5.25.5) [path][gem]" type="rubylib">
         <properties>
           <option name="additionalInfo">
             <AdditionalInfo>
@@ -513,20 +513,20 @@
               <option value="lib" />
             </list>
           </option>
-          <option name="url" value="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.4" />
-          <option name="version" value="5.25.4" />
+          <option name="url" value="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.5" />
+          <option name="version" value="5.25.5" />
         </properties>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.4/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.4/test" />
+          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.5/lib" />
+          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.5/test" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.4/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.4/test" />
+          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.5/lib" />
+          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.5/test" />
         </SOURCES>
         <excluded>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.4/test" />
+          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/3.4.0/gems/minitest-5.25.5/test" />
         </excluded>
       </library>
     </orderEntry>
@@ -1109,8 +1109,31 @@
     <option name="myRootTask">
       <RakeTaskImpl id="rake">
         <subtasks>
-          <RakeTaskImpl description="全RSpecを実行する" fullCommand="spec" id="spec" />
+          <RakeTaskImpl description="Build fileadmin-0.0.0.gem into the pkg directory" fullCommand="build" id="build" />
+          <RakeTaskImpl id="build">
+            <subtasks>
+              <RakeTaskImpl description="Generate SHA512 checksum of fileadmin-0.0.0.gem into the checksums directory" fullCommand="build:checksum" id="checksum" />
+            </subtasks>
+          </RakeTaskImpl>
+          <RakeTaskImpl description="Remove any temporary products" fullCommand="clean" id="clean" />
+          <RakeTaskImpl description="Remove any generated files" fullCommand="clobber" id="clobber" />
+          <RakeTaskImpl description="Build and install fileadmin-0.0.0.gem into system gems" fullCommand="install" id="install" />
+          <RakeTaskImpl id="install">
+            <subtasks>
+              <RakeTaskImpl description="Build and install fileadmin-0.0.0.gem into system gems without network access" fullCommand="install:local" id="local" />
+            </subtasks>
+          </RakeTaskImpl>
+          <RakeTaskImpl description="Create tag v0.0.0 and build and push fileadmin-0.0.0.gem to TODO: Set to your gem server 'https://example.com'" fullCommand="release[remote]" id="release[remote]" />
+          <RakeTaskImpl description="Run RSpec code examples" fullCommand="spec" id="spec" />
           <RakeTaskImpl description="" fullCommand="default" id="default" />
+          <RakeTaskImpl description="" fullCommand="release" id="release" />
+          <RakeTaskImpl id="release">
+            <subtasks>
+              <RakeTaskImpl description="" fullCommand="release:guard_clean" id="guard_clean" />
+              <RakeTaskImpl description="" fullCommand="release:rubygem_push" id="rubygem_push" />
+              <RakeTaskImpl description="" fullCommand="release:source_control_push" id="source_control_push" />
+            </subtasks>
+          </RakeTaskImpl>
         </subtasks>
       </RakeTaskImpl>
     </option>

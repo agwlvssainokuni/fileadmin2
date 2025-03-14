@@ -14,14 +14,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-require 'rspec'
-require_relative '../../../file_admin/helper/logger'
-require_relative '../../../file_admin/helper/file_operation'
+require "file_admin/helper/logger"
+require "file_admin/helper/file_operation"
 
 FileAdmin::Helper::Logger.console_enabled = false
 FileAdmin::Helper::Logger.syslog_enabled = false
 
-describe FileAdmin::Helper::FileOperation do
+RSpec.describe FileAdmin::Helper::FileOperation do
   include FileAdmin::Helper::FileOperation
 
   before(:all) do

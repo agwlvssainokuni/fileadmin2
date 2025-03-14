@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-##
-#  Copyright 2012,2025 agwlvssainokuni
+#
+#  Copyright 2025 agwlvssainokuni
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,9 +15,14 @@
 #  limitations under the License.
 #
 
-require "bundler/gem_tasks"
-require "rspec/core/rake_task"
+RSpec.configure do |config|
+  # Enable flags like --only-failures and --next-failure
+  config.example_status_persistence_file_path = ".rspec_status"
 
-RSpec::Core::RakeTask.new(:spec)
+  # Disable RSpec exposing methods globally on `Module` and `main`
+  config.disable_monkey_patching!
 
-task default: :spec
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
+end

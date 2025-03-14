@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-##
-#  Copyright 2012,2025 agwlvssainokuni
+#
+#  Copyright 2025 agwlvssainokuni
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,9 +15,17 @@
 #  limitations under the License.
 #
 
-require "bundler/gem_tasks"
-require "rspec/core/rake_task"
+module FileAdmin
+  module Helper
+    module FileOperation
 
-RSpec::Core::RakeTask.new(:spec)
+      def mv: (String, String, bool) -> bool
+      def rm: (String, bool) -> bool
+      def zip_with_moving_files: (String, Array[String], bool) -> bool
+      def zip_without_moving_files: (String, Array[String], bool) -> bool
+      def exec_zip: (String, Array[String], bool, bool) -> bool
+      def chown: (String, String, bool) -> bool
 
-task default: :spec
+    end
+  end
+end

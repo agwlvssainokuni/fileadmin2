@@ -1,17 +1,14 @@
 # frozen_string_literal: true
 
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-gem 'syslog'
-gem 'rubyzip'
-gem 'activesupport'
-gem 'activemodel'
+gemspec
 
 group :test do
-  gem 'rake'
-  gem 'rspec'
+  gem "rake"
+  gem "rspec"
 end
 
 group :development do
-  gem 'irb'
+  gem "irb"
 end

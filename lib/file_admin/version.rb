@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-##
-#  Copyright 2012,2025 agwlvssainokuni
+#
+#  Copyright 2025 agwlvssainokuni
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
 #  limitations under the License.
 #
 
-require "bundler/gem_tasks"
-require "rspec/core/rake_task"
-
-RSpec::Core::RakeTask.new(:spec)
-
-task default: :spec
+module FileAdmin
+  VERSION = "0.0.0"
+end

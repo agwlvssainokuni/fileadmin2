@@ -15,9 +15,9 @@
 #  limitations under the License.
 #
 
-require_relative '../../../file_admin/helper/target_collector'
+require "file_admin/helper/target_collector"
 
-describe FileAdmin::Helper::TargetCollector do
+RSpec.describe FileAdmin::Helper::TargetCollector do
   include FileAdmin::Helper::TargetCollector
 
   before(:all) do
