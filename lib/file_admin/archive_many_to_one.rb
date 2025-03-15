@@ -24,7 +24,7 @@ require "file_admin/helper/target_collector"
 module FileAdmin
 
   # 集約アーカイブ作成機能
-  class AggregateArchive
+  class ArchiveManyToOne
     include ActiveModel::Validations
     include FileAdmin::Helper::FileOperation
     include FileAdmin::Helper::TargetCollector
@@ -47,7 +47,7 @@ module FileAdmin
     validates :generation, presence: true
 
     def initialize(label)
-      @logger = FileAdmin::Helper::Logger.new("AGGREGATE[#{label}]")
+      @logger = FileAdmin::Helper::Logger.new("MANY2ONE[#{label}]")
       # デフォルト値
       @extra_cond = proc { true }
       @comparator = proc { |a, b| a <=> b }
@@ -68,7 +68,7 @@ module FileAdmin
         end
 
         arcfile = File.join(
-          to_dir.blank? ? "." : to_dir,
+          to_dir.present? ? to_dir : ".",
           time.strftime(arcname)
         )
 

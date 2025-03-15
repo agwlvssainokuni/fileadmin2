@@ -16,7 +16,7 @@
 #
 
 module FileAdmin
-  class AggregateArchive
+  class ArchiveManyToOne
 
     attr_reader logger: Helper::Logger
 

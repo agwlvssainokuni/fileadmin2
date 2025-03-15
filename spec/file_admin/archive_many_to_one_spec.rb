@@ -15,7 +15,7 @@
 #  limitations under the License.
 #
 
-require "file_admin/aggregate_archive"
+require "file_admin/archive_many_to_one"
 
 FileAdmin::Helper::Logger.console_enabled = false
 FileAdmin::Helper::Logger.syslog_enabled = false
@@ -28,9 +28,9 @@ def create_subject(klass, label, conf)
   end
 end
 
-RSpec.describe FileAdmin::AggregateArchive do
+RSpec.describe FileAdmin::ArchiveManyToOne do
 
-  subject { create_subject(FileAdmin::AggregateArchive, "複合アーカイブ試験", conf) }
+  subject { create_subject(FileAdmin::ArchiveManyToOne, "アーカイブ(N:1)試験", conf) }
 
   let(:base_conf) { {
     "basedir" => "#{Dir.pwd}/testdir/src",
@@ -130,7 +130,7 @@ RSpec.describe FileAdmin::AggregateArchive do
 
     describe "正常系" do
 
-      shared_examples_for "複合アーカイブして正常終了" do
+      shared_examples_for "アーカイブ(N:1)して正常終了" do
         before do
           @retval = subject.process(time, dry_run)
         end
@@ -174,14 +174,14 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "単一ファイル" do
-        it_behaves_like "複合アーカイブして正常終了"
+        it_behaves_like "アーカイブ(N:1)して正常終了"
         let(:file_list) { ["dir1/file11.txt"] }
         let(:files_in_archive) { file_list }
         let(:conf) { base_conf }
       end
 
       describe "複数ファイル (絞込みなし)" do
-        it_behaves_like "複合アーカイブして正常終了"
+        it_behaves_like "アーカイブ(N:1)して正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
@@ -193,7 +193,7 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "複数ファイル (to_dir指定なし)" do
-        it_behaves_like "複合アーカイブして正常終了"
+        it_behaves_like "アーカイブ(N:1)して正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
@@ -206,7 +206,7 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "複数ファイル (owner指定なし)" do
-        it_behaves_like "複合アーカイブして正常終了"
+        it_behaves_like "アーカイブ(N:1)して正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
@@ -218,7 +218,7 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "複数ファイル (patternで絞込み)" do
-        it_behaves_like "複合アーカイブして正常終了"
+        it_behaves_like "アーカイブ(N:1)して正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
@@ -230,7 +230,7 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "複数ファイル (extra_cond(正規表現)で絞込み)" do
-        it_behaves_like "複合アーカイブして正常終了"
+        it_behaves_like "アーカイブ(N:1)して正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
@@ -242,7 +242,7 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "複数ファイル (extra_cond(正規表現+追加条件)で絞込み)" do
-        it_behaves_like "複合アーカイブして正常終了"
+        it_behaves_like "アーカイブ(N:1)して正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
@@ -254,7 +254,7 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "複数ファイル (generationで絞込み)" do
-        it_behaves_like "複合アーカイブして正常終了"
+        it_behaves_like "アーカイブ(N:1)して正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
@@ -270,7 +270,7 @@ RSpec.describe FileAdmin::AggregateArchive do
 
     describe "境界系" do
 
-      shared_examples_for "複合アーカイブしないで正常終了" do
+      shared_examples_for "アーカイブ(N:1)しないで正常終了" do
         before do
           @retval = subject.process(time, dry_run)
         end
@@ -297,7 +297,7 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "pattern絞込みでディレクトリのみ" do
-        it_behaves_like "複合アーカイブしないで正常終了"
+        it_behaves_like "アーカイブ(N:1)しないで正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
@@ -310,7 +310,7 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "pattern絞込みで0件" do
-        it_behaves_like "複合アーカイブしないで正常終了"
+        it_behaves_like "アーカイブ(N:1)しないで正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
@@ -323,7 +323,7 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "extra_cond(正規表現)絞込みで0件" do
-        it_behaves_like "複合アーカイブしないで正常終了"
+        it_behaves_like "アーカイブ(N:1)しないで正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
@@ -336,7 +336,7 @@ RSpec.describe FileAdmin::AggregateArchive do
       end
 
       describe "extra_cond(正規表現+追加条件)絞込みで0件" do
-        it_behaves_like "複合アーカイブしないで正常終了"
+        it_behaves_like "アーカイブ(N:1)しないで正常終了"
         let(:file_list) {
           [
             "dir1/file11.txt", "dir1/file12.txt",
