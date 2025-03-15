@@ -27,27 +27,27 @@ module FileAdmin
 
       # ファイルをディレクトリに移動する。
       def mv(file, to_dir, dry_run = false)
-        @logger.debug("processing: mv %s %s", file, to_dir)
+        logger.debug("processing: mv %s %s", file, to_dir)
         begin
           to_file = Pathname(to_dir).join(File.basename(file))
           FileUtils.mv(file, to_file, :noop => dry_run)
           return true
         rescue Exception => err
-          @logger.error("mv %s %s: NG, class=%s, message=%s",
-                        file, to_dir, err.class, err.message)
+          logger.error("mv %s %s: NG, class=%s, message=%s",
+                       file, to_dir, err.class, err.message)
           return false
         end
       end
 
       # ファイルを削除する。
       def rm(file, dry_run = false)
-        @logger.debug("processing: rm %s", file)
+        logger.debug("processing: rm %s", file)
         begin
           FileUtils.rm(file, :noop => dry_run)
           return true
         rescue Exception => err
-          @logger.error("rm %s: NG, class=%s, message=%s",
-                        file, err.class, err.message)
+          logger.error("rm %s: NG, class=%s, message=%s",
+                       file, err.class, err.message)
           return false
         end
       end
@@ -65,25 +65,25 @@ module FileAdmin
       # リストで指定されたファイル/ディレクトリを対象として
       # ZIPコマンドを実行する。
       def exec_zip(arcfile, filelist, move, dry_run = false)
-        @logger.debug("processing: zip %s %s",
-                      arcfile, filelist * " ")
+        logger.debug("processing: zip %s %s",
+                     arcfile, filelist * " ")
         return true if dry_run
         begin
           Zip::File.open(arcfile, Zip::File::CREATE) { |zipfile|
             filelist.each { |file| zipfile.add(file, file) }
           }
         rescue Exception => err
-          @logger.error("zip %s %s: NG, class=%s, message=%s",
-                        arcfile, filelist * " ", err.class, err.message)
+          logger.error("zip %s %s: NG, class=%s, message=%s",
+                       arcfile, filelist * " ", err.class, err.message)
           return false
         end
         if move
-          @logger.debug("processing: rm %s", filelist * " ")
+          logger.debug("processing: rm %s", filelist * " ")
           begin
             FileUtils.rm(filelist, :noop => dry_run)
           rescue Exception => err
-            @logger.error("rm %s: NG, class=%s, message=%s",
-                          filelist * " ", err.class, err.message)
+            logger.error("rm %s: NG, class=%s, message=%s",
+                         filelist * " ", err.class, err.message)
             return false
           end
         end
@@ -92,7 +92,7 @@ module FileAdmin
 
       # ファイルの所有者を変更する。
       def chown(owner, path, dry_run = false)
-        @logger.debug("processing: chown %s %s", owner, path)
+        logger.debug("processing: chown %s %s", owner, path)
         begin
           og = owner.split(":")
           u = og[0]
@@ -100,8 +100,8 @@ module FileAdmin
           FileUtils.chown(u, g, path, :noop => dry_run)
           return true
         rescue Exception => err
-          @logger.error("chown %s %s: NG, class=%s, message=%s",
-                        owner, path, err.class, err.message)
+          logger.error("chown %s %s: NG, class=%s, message=%s",
+                       owner, path, err.class, err.message)
           return false
         end
       end

@@ -22,6 +22,7 @@ FileAdmin::Helper::Logger.syslog_enabled = false
 
 RSpec.describe FileAdmin::Helper::FileOperation do
   include FileAdmin::Helper::FileOperation
+  attr_reader :logger
 
   before(:all) do
     @logger = FileAdmin::Helper::Logger.new
