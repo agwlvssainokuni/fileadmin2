@@ -16,16 +16,23 @@
 #
 
 module FileAdmin
-  module Helper
-    module TargetCollector
+  class AggregateArchive
 
-      def collect_target_by_generation: (String | Array[String], ^(String) -> bool, ^(String, String) -> Numeric, Numeric) -> Array[String]
-      def collect_target_by_threshold: (String | Array[String], ^(String) -> bool, ^(String, String) -> Numeric, ^(String) -> String, String) -> Array[String]
+    attr_reader logger: Helper::Logger
 
-      private
+    attr_accessor basedir: String
+    attr_accessor arcname: String
+    attr_accessor to_dir: String | nil
+    attr_accessor chown: String | nil
 
-      def collect_target_common: (String, ^(String) -> bool, ^(String, String) -> Numeric) -> Array[String]
+    attr_accessor pattern: String | Array[String]
+    attr_accessor extra_cond: ^(String) -> bool
+    attr_accessor comparator: ^(String, String) -> Numeric
+    attr_accessor generation: Numeric
 
-    end
+    def initialize: (String) -> void
+
+    def process: (Time, bool) -> bool
+
   end
 end
