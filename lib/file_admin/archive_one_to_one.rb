@@ -70,7 +70,7 @@ module FileAdmin
 
           arcfile = File.join(
             to_dir.present? ? to_dir : File.dirname(f),
-            File.basename(f, suffix.to_s)
+            File.basename(f, suffix.to_s) + ".zip"
           )
 
           return false unless zip_with_moving_files(arcfile, Array(f), dry_run)
