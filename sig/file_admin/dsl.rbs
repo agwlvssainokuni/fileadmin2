@@ -16,19 +16,20 @@
 #
 
 module FileAdmin
-  class ArchiveOneToOne
 
-    attr_reader logger: Helper::Logger
-
-    attr_accessor basedir: String
-    attr_accessor suffix: String | nil
-    attr_accessor to_dir: String | nil
-    attr_accessor owner: String | nil
-    attr_accessor collector: _Collector
-
-    def initialize: (String) -> void
+  interface _Configuration
+    def collector=: (_Collector) -> _Collector
     def valid?: () -> bool
     def errors: () -> ActiveModel::Errors
     def process: (Time, bool) -> bool
+  end
+
+  class DSL
+    @configuration: Array[_Configuration]
+    def configuration: () -> Array[_Configuration]
+    def archive_many_to_one: (String) -> ArchiveManyToOne
+    def archive_one_to_one: (String) -> ArchiveOneToOne
+    def collect_by_generation: () -> CollectByGeneration
+    def collect_by_threshold: () -> CollectByThreshold
   end
 end

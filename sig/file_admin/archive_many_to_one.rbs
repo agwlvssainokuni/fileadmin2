@@ -27,8 +27,8 @@ module FileAdmin
     attr_accessor collector: _Collector
 
     def initialize: (String) -> void
-
+    def valid?: () -> bool
+    def errors: () -> ActiveModel::Errors
     def process: (Time, bool) -> bool
-
   end
 end
