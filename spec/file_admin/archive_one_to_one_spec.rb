@@ -16,27 +16,34 @@
 #
 
 require "file_admin/archive_one_to_one"
+require "file_admin/collector"
 
 FileAdmin::Helper::Logger.console_enabled = false
 FileAdmin::Helper::Logger.syslog_enabled = false
 
-def create_subject(klass, label, conf)
+def create_subject(klass, label, conf, conf_collect)
   klass.new(label).tap do |obj|
     conf.each do |k, v|
       obj.method("#{k}=".to_sym).call(v)
+    end
+    obj.collector = FileAdmin::CollectByGeneration.new
+    conf_collect.each do |k, v|
+      obj.collector.method("#{k}=".to_sym).call(v)
     end
   end
 end
 
 RSpec.describe FileAdmin::ArchiveOneToOne do
 
-  subject { create_subject(FileAdmin::ArchiveOneToOne, "アーカイブ(1:1)試験", conf) }
+  subject { create_subject(FileAdmin::ArchiveOneToOne, "アーカイブ(1:1)試験", conf, conf_collect) }
 
   let(:base_conf) { {
     "basedir" => "#{Dir.pwd}/testdir/src",
     "suffix" => ".txt",
     "to_dir" => "#{Dir.pwd}/testdir/dest",
-    "owner" => "#{%x{whoami}.chop}:#{%x{groups $(whoami) | awk '{print $1;}'}.chop}",
+    "owner" => "#{%x{whoami}.chop}:#{%x{groups $(whoami) | awk '{print $1;}'}.chop}"
+  } }
+  let(:base_conf_collect) { {
     "pattern" => ["dir1/*", "dir2/*"],
     "extra_cond" => proc { |a| /file(\d{2})\.txt\z/ =~ a && $1.to_i > 10 },
     "comparator" => proc { |a, b| a <=> b },
@@ -47,61 +54,73 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
 
     context "全指定 (patternは配列)" do
       let(:conf) { base_conf }
+      let(:conf_collect) { base_conf_collect }
       it { expect(subject).to be_valid }
     end
 
     context "全指定 (patternは文字列)" do
-      let(:conf) { base_conf.merge("pattern" => "dir1/*") }
+      let(:conf) { base_conf }
+      let(:conf_collect) { base_conf_collect.merge("pattern" => "dir1/*") }
       it { expect(subject).to be_valid }
     end
 
     context "basedirなし" do
       let(:conf) { base_conf.merge("basedir" => nil) }
+      let(:conf_collect) { base_conf_collect }
       it { expect(subject).not_to be_valid }
     end
 
     context "suffixなし" do
       let(:conf) { base_conf.merge("suffix" => nil) }
+      let(:conf_collect) { base_conf_collect }
       it { expect(subject).to be_valid }
     end
 
     context "to_dirなし" do
       let(:conf) { base_conf.merge("to_dir" => nil) }
+      let(:conf_collect) { base_conf_collect }
       it { expect(subject).to be_valid }
     end
 
     context "ownerなし" do
       let(:conf) { base_conf.merge("owner" => nil) }
+      let(:conf_collect) { base_conf_collect }
       it { expect(subject).to be_valid }
     end
 
     context "patternなし" do
-      let(:conf) { base_conf.merge("pattern" => nil) }
+      let(:conf) { base_conf }
+      let(:conf_collect) { base_conf_collect.merge("pattern" => nil) }
       it { expect(subject).not_to be_valid }
     end
 
     context "patternが空配列" do
-      let(:conf) { base_conf.merge("pattern" => []) }
+      let(:conf) { base_conf }
+      let(:conf_collect) { base_conf_collect.merge("pattern" => []) }
       it { expect(subject).not_to be_valid }
     end
 
     context "patternが空文字の配列" do
-      let(:conf) { base_conf.merge("pattern" => [""]) }
+      let(:conf) { base_conf }
+      let(:conf_collect) { base_conf_collect.merge("pattern" => [""]) }
       it { expect(subject).not_to be_valid }
     end
 
     context "extra_condなし" do
-      let(:conf) { base_conf.merge("extra_cond" => nil) }
+      let(:conf) { base_conf }
+      let(:conf_collect) { base_conf_collect.merge("extra_cond" => nil) }
       it { expect(subject).not_to be_valid }
     end
 
     context "comparatorなし" do
-      let(:conf) { base_conf.merge("comparator" => nil) }
+      let(:conf) { base_conf }
+      let(:conf_collect) { base_conf_collect.merge("comparator" => nil) }
       it { expect(subject).not_to be_valid }
     end
 
     context "generationなし" do
-      let(:conf) { base_conf.merge("generation" => nil) }
+      let(:conf) { base_conf }
+      let(:conf_collect) { base_conf_collect.merge("generation" => nil) }
       it { expect(subject).not_to be_valid }
     end
   end
@@ -193,6 +212,7 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
         let(:file_list) { ["dir1/file11.txt"] }
         let(:files_in_archive) { file_list }
         let(:conf) { base_conf }
+        let(:conf_collect) { base_conf_collect }
       end
 
       describe "複数ファイル (絞込みなし)" do
@@ -205,6 +225,7 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
         }
         let(:files_in_archive) { file_list }
         let(:conf) { base_conf }
+        let(:conf_collect) { base_conf_collect }
       end
 
       describe "複数ファイル (to_dir指定なし)" do
@@ -217,6 +238,7 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
         }
         let(:files_in_archive) { file_list }
         let(:conf) { base_conf.merge("to_dir" => nil) }
+        let(:conf_collect) { base_conf_collect }
         let(:arcdir) { nil }
       end
 
@@ -230,6 +252,7 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
         }
         let(:files_in_archive) { file_list }
         let(:conf) { base_conf.merge("owner" => nil) }
+        let(:conf_collect) { base_conf_collect }
       end
 
       describe "複数ファイル (patternで絞込み)" do
@@ -241,7 +264,8 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
           ]
         }
         let(:files_in_archive) { [file_list[0], file_list[1]] }
-        let(:conf) { base_conf.merge("pattern" => "dir1/*") }
+        let(:conf) { base_conf }
+        let(:conf_collect) { base_conf_collect.merge("pattern" => "dir1/*") }
       end
 
       describe "複数ファイル (extra_cond(正規表現)で絞込み)" do
@@ -253,8 +277,9 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
           ]
         }
         let(:files_in_archive) { [file_list[0], file_list[2]] }
-        let(:conf) {
-          base_conf.merge("extra_cond" => proc { |a| /file(\d1)\.txt\z/ =~ a })
+        let(:conf) { base_conf }
+        let(:conf_collect) {
+          base_conf_collect.merge("extra_cond" => proc { |a| /file(\d1)\.txt\z/ =~ a })
         }
       end
 
@@ -267,8 +292,9 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
           ]
         }
         let(:files_in_archive) { [file_list[2], file_list[3]] }
-        let(:conf) {
-          base_conf.merge("extra_cond" => proc { |a| /file(\d{2})\.txt\z/ =~ a && $1.to_i > 20 })
+        let(:conf) { base_conf }
+        let(:conf_collect) {
+          base_conf_collect.merge("extra_cond" => proc { |a| /file(\d{2})\.txt\z/ =~ a && $1.to_i > 20 })
         }
       end
 
@@ -281,8 +307,9 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
           ]
         }
         let(:files_in_archive) { [file_list[0], file_list[1]] }
-        let(:conf) {
-          base_conf.merge("pattern" => "*/*", "generation" => 2)
+        let(:conf) { base_conf }
+        let(:conf_collect) {
+          base_conf_collect.merge("pattern" => "*/*", "generation" => 2)
         }
       end
     end
@@ -331,8 +358,9 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
             "dir2/file21.txt", "dir2/file22.txt"
           ]
         }
-        let(:conf) {
-          base_conf.merge("pattern" => "*", "extra_cond" => proc { true })
+        let(:conf) { base_conf }
+        let(:conf_collect) {
+          base_conf_collect.merge("pattern" => "*", "extra_cond" => proc { true })
         }
       end
 
@@ -344,8 +372,9 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
             "dir2/file21.txt", "dir2/file22.txt"
           ]
         }
-        let(:conf) {
-          base_conf.merge("pattern" => "nodir/*", "extra_cond" => proc { true })
+        let(:conf) { base_conf }
+        let(:conf_collect) {
+          base_conf_collect.merge("pattern" => "nodir/*", "extra_cond" => proc { true })
         }
       end
 
@@ -357,8 +386,9 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
             "dir2/file21.txt", "dir2/file22.txt"
           ]
         }
-        let(:conf) {
-          base_conf.merge("extra_cond" => proc { |a| /(\d{2})\.not\z/ =~ a })
+        let(:conf) { base_conf }
+        let(:conf_collect) {
+          base_conf_collect.merge("extra_cond" => proc { |a| /(\d{2})\.not\z/ =~ a })
         }
       end
 
@@ -370,8 +400,9 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
             "dir2/file21.txt", "dir2/file22.txt"
           ]
         }
-        let(:conf) {
-          base_conf.merge("extra_cond" => proc { |a| /file(\d{2})\.txt\z/ =~ a && $1.to_i < 0 })
+        let(:conf) { base_conf }
+        let(:conf_collect) {
+          base_conf_collect.merge("extra_cond" => proc { |a| /file(\d{2})\.txt\z/ =~ a && $1.to_i < 0 })
         }
       end
     end
@@ -386,6 +417,7 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
           ]
         }
         let(:conf) { base_conf.merge("basedir" => "testdir/nosrc") }
+        let(:conf_collect) { base_conf_collect }
         before do
           @retval = subject.process(time, dry_run)
         end
@@ -429,6 +461,7 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
           ]
         }
         let(:conf) { base_conf }
+        let(:conf_collect) { base_conf_collect }
         before do
           %x{chmod -w testdir/dest}
           @retval = subject.process(time, dry_run)
@@ -472,6 +505,7 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
           ]
         }
         let(:conf) { base_conf.merge("owner" => "nouser") }
+        let(:conf_collect) { base_conf_collect }
         before do
           @retval = subject.process(time, dry_run)
         end
