@@ -16,19 +16,32 @@
 #
 
 module FileAdmin
-  class ArchiveManyToOne
 
-    attr_reader logger: Helper::Logger
+  interface _Collector
+    def collect: () -> Array[String]
+  end
 
-    attr_accessor basedir: String
-    attr_accessor arcname: String
-    attr_accessor to_dir: String | nil
-    attr_accessor owner: String | nil
-    attr_accessor collector: _Collector
+  class CollectByGeneration
+    attr_accessor pattern: String | Array[String]
+    attr_accessor extra_cond: ^(String) -> bool
+    attr_accessor comparator: ^(String, String) -> Numeric
+    attr_accessor generation: Numeric
 
-    def initialize: (String) -> void
+    def initialize: () -> void
 
     def process: (Time, bool) -> bool
-
   end
+
+  class CollectByThreshold
+    attr_accessor pattern: String | Array[String]
+    attr_accessor extra_cond: ^(String) -> bool
+    attr_accessor comparator: ^(String, String) -> Numeric
+    attr_accessor slicer: ^(String) -> String
+    attr_accessor threshold: String
+
+    def initialize: () -> void
+
+    def process: (Time, bool) -> bool
+  end
+
 end

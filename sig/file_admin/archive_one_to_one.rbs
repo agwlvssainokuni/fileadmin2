@@ -24,19 +24,11 @@ module FileAdmin
     attr_accessor suffix: String | nil
     attr_accessor to_dir: String | nil
     attr_accessor owner: String | nil
-
-    attr_accessor pattern: String | Array[String]
-    attr_accessor extra_cond: ^(String) -> bool
-    attr_accessor comparator: ^(String, String) -> Numeric
-    attr_accessor generation: Numeric
+    attr_accessor collector: _Collector
 
     def initialize: (String) -> void
 
     def process: (Time, bool) -> bool
-
-    private
-
-    def collect_target: -> Array[String]
 
   end
 end

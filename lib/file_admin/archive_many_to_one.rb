@@ -35,23 +35,16 @@ module FileAdmin
     validates :basedir, presence: true
     validates :arcname, presence: true
 
-    attr_accessor :pattern, :extra_cond, :comparator, :generation
-    validates :pattern, presence: true
-    validates_each :pattern do |record, attr, value|
-      if value.present? && Array(value).select { |v| v.blank? }.present?
-        record.errors.add(attr, "Can't be blank")
+    attr_accessor :collector
+    validates :collector, presence: true
+    validates_each :collector do |record, attr, value|
+      if value.present? && value.invalid?
+        value.errors.each { |error| record.errors.add(attr, error) }
       end
     end
-    validates :extra_cond, presence: true
-    validates :comparator, presence: true
-    validates :generation, presence: true
 
     def initialize(label)
       @logger = FileAdmin::Helper::Logger.new("MANY2ONE[#{label}]")
-      # デフォルト値
-      @extra_cond = proc { true }
-      @comparator = proc { |a, b| a <=> b }
-      @generation = 0
     end
 
     # 複合アーカイブ作成
@@ -60,8 +53,7 @@ module FileAdmin
 
       Dir.chdir(basedir) {
 
-        files = collect_target
-        files = files.select { |f| File.file?(f) }
+        files = collector.collect.select { |f| File.file?(f) }
         if files.empty?
           logger.debug("no files, skipped")
           return true
@@ -85,12 +77,6 @@ module FileAdmin
       logger.error("chdir %s: NG; class=%s, message=%s",
                    basedir, err.class, err.message)
       return false
-    end
-
-    private
-
-    def collect_target
-      collect_target_by_generation(pattern, extra_cond, comparator, generation)
     end
 
   end
