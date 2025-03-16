@@ -34,5 +34,9 @@ module FileAdmin
 
     def process: (Time, bool) -> bool
 
+    private
+
+    def collect_target: -> Array[String]
+
   end
 end

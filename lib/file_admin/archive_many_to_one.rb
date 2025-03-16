@@ -60,7 +60,7 @@ module FileAdmin
 
       Dir.chdir(basedir) {
 
-        files = collect_target_by_generation(pattern, extra_cond, comparator, generation)
+        files = collect_target
         files = files.select { |f| File.file?(f) }
         if files.empty?
           logger.debug("no files, skipped")
@@ -85,6 +85,12 @@ module FileAdmin
       logger.error("chdir %s: NG; class=%s, message=%s",
                    basedir, err.class, err.message)
       return false
+    end
+
+    private
+
+    def collect_target
+      collect_target_by_generation(pattern, extra_cond, comparator, generation)
     end
 
   end
