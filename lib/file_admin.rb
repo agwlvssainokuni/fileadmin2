@@ -27,7 +27,7 @@ def file_admin
   opt = OptionParser.new
   opt.on("--time TIME", "基準日時指定") { |p| opt_time = Time.parse(p) }
   opt.on("--[no-]validate", "設定チェック") { |p| opt_validate = p }
-  opt.on("--[no-]dry-run", "ドライライン") { |p| opt_dry_run = p }
+  opt.on("--[no-]dry-run", "ドライラン") { |p| opt_dry_run = p }
   opt.on("--[no-]syslog", "SYSLOG出力フラグ") { |p| FileAdmin::Helper::Logger.syslog_enabled = p }
   opt.on("--[no-]console", "コンソール出力フラグ") { |p| FileAdmin::Helper::Logger.console_enabled = p }
   opt.parse!(ARGV)
@@ -40,12 +40,12 @@ def file_admin
   ok = true
   dsl.configuration.each do |conf|
     if opt_validate
-      ok &&= conf.valid?
+      ok = false unless conf.valid?
       conf.errors.each do |error|
         conf.logger.error(error.full_message)
       end
     else
-      ok &&= conf.process(opt_time, opt_dry_run)
+      ok = false unless conf.process(opt_time, opt_dry_run)
     end
   end
 
