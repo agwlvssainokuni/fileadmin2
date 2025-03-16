@@ -18,6 +18,7 @@
 module FileAdmin
 
   interface _Configuration
+    def logger: () -> Helper::Logger
     def collector=: (_Collector) -> _Collector
     def valid?: () -> bool
     def errors: () -> ActiveModel::Errors
