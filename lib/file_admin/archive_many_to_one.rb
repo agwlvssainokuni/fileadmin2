@@ -37,9 +37,9 @@ module FileAdmin
 
     attr_accessor :collector
     validates :collector, presence: true
-    validates_each :collector do |record, attr, value|
-      if value.present? && value.invalid?
-        value.errors.each { |error| record.errors.add(attr, error) }
+    validate do |record|
+      if record.collector.present? && record.collector.invalid?
+        record.errors.merge!(record.collector.errors)
       end
     end
 

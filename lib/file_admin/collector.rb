@@ -26,14 +26,14 @@ module FileAdmin
 
     attr_accessor :pattern, :extra_cond, :comparator, :generation
     validates :pattern, presence: true
-    validates_each :pattern do |record, attr, value|
-      if value.present? && Array(value).select { |v| v.blank? }.present?
-        record.errors.add(attr, "Can't be blank")
-      end
-    end
     validates :extra_cond, presence: true
     validates :comparator, presence: true
     validates :generation, presence: true
+    validate do |record|
+      if record.pattern.present? && Array(record.pattern).select { |v| v.blank? }.present?
+        record.errors.add(:pattern, "Can't be blank")
+      end
+    end
 
     def initialize
       @extra_cond = proc { true }
@@ -52,15 +52,15 @@ module FileAdmin
 
     attr_accessor :pattern, :extra_cond, :comparator, :slicer, :threshold
     validates :pattern, presence: true
-    validates_each :pattern do |record, attr, value|
-      if value.present? && Array(value).select { |v| v.blank? }.present?
-        record.errors.add(attr, "Can't be blank")
-      end
-    end
     validates :extra_cond, presence: true
     validates :comparator, presence: true
     validates :slicer, presence: true
     validates :threshold, presence: true
+    validate do |record|
+      if record.pattern.present? && Array(record.pattern).select { |v| v.blank? }.present?
+        record.errors.add(:pattern, "Can't be blank")
+      end
+    end
 
     def initialize
       @extra_cond = proc { true }
