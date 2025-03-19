@@ -18,25 +18,14 @@
 require "active_support/core_ext/integer/time"
 require "file_admin/backup_file"
 require "file_admin/collector"
+require_relative "spec_helper"
 
 FileAdmin::Helper::Logger.console_enabled = false
 FileAdmin::Helper::Logger.syslog_enabled = false
 
-def create_subject(klass, label, conf, conf_collect)
-  klass.new(label).tap do |obj|
-    conf.each do |k, v|
-      obj.method("#{k}=".to_sym).call(v)
-    end
-    obj.collector = FileAdmin::CollectByThreshold.new
-    conf_collect.each do |k, v|
-      obj.collector.method("#{k}=".to_sym).call(v)
-    end
-  end
-end
-
 RSpec.describe FileAdmin::BackupFile do
 
-  subject { create_subject(FileAdmin::BackupFile, "ファイル退避試験", conf, conf_collect) }
+  subject { create_subject(FileAdmin::BackupFile, FileAdmin::CollectByThreshold, "ファイル退避試験", conf, conf_collect) }
 
   let(:base_conf) { {
     "basedir" => "#{Dir.pwd}/testdir/src",

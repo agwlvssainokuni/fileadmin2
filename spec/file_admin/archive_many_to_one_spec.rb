@@ -17,25 +17,14 @@
 
 require "file_admin/archive_many_to_one"
 require "file_admin/collector"
+require_relative "spec_helper"
 
 FileAdmin::Helper::Logger.console_enabled = false
 FileAdmin::Helper::Logger.syslog_enabled = false
 
-def create_subject(klass, label, conf, conf_collect)
-  klass.new(label).tap do |obj|
-    conf.each do |k, v|
-      obj.method("#{k}=".to_sym).call(v)
-    end
-    obj.collector = FileAdmin::CollectByGeneration.new
-    conf_collect.each do |k, v|
-      obj.collector.method("#{k}=".to_sym).call(v)
-    end
-  end
-end
-
 RSpec.describe FileAdmin::ArchiveManyToOne do
 
-  subject { create_subject(FileAdmin::ArchiveManyToOne, "アーカイブ(N:1)試験", conf, conf_collect) }
+  subject { create_subject(FileAdmin::ArchiveManyToOne, FileAdmin::CollectByGeneration, "アーカイブ(N:1)試験", conf, conf_collect) }
 
   let(:base_conf) { {
     "basedir" => "#{Dir.pwd}/testdir/src",
