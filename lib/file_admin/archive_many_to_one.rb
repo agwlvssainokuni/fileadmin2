@@ -19,7 +19,6 @@ require "active_support"
 require "active_model"
 require "file_admin/helper/logger"
 require "file_admin/helper/file_operation"
-require "file_admin/helper/target_collector"
 
 module FileAdmin
 
@@ -27,7 +26,6 @@ module FileAdmin
   class ArchiveManyToOne
     include ActiveModel::Validations
     include FileAdmin::Helper::FileOperation
-    include FileAdmin::Helper::TargetCollector
 
     attr_reader :logger
 
