@@ -30,6 +30,8 @@ module FileAdmin
     def configuration: () -> Array[_Configuration]
     def archive_many_to_one: (String) -> ArchiveManyToOne
     def archive_one_to_one: (String) -> ArchiveOneToOne
+    def backup_file: (String) -> BackupFile
+    def cleanup_file: (String) -> CleanupFile
     def collect_by_generation: () -> CollectByGeneration
     def collect_by_threshold: () -> CollectByThreshold
   end

@@ -51,6 +51,11 @@ module FileAdmin
       Dir.chdir(basedir) {
 
         files = collector.collect(time).select { |f| File.file?(f) }
+        if files.empty?
+          logger.debug("no files, skipped")
+          return true
+        end
+
         files.each { |file|
           return false unless rm(file, dry_run)
           logger.info("rm %s: OK", file)

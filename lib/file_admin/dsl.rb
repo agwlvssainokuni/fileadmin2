@@ -15,8 +15,11 @@
 #  limitations under the License.
 #
 
+require "active_support/core_ext/integer/time"
 require "file_admin/archive_many_to_one"
 require "file_admin/archive_one_to_one"
+require "file_admin/backup_file"
+require "file_admin/cleanup_file"
 require "file_admin/collector"
 
 module FileAdmin
@@ -34,6 +37,18 @@ module FileAdmin
 
     def archive_one_to_one(label)
       obj = FileAdmin::ArchiveOneToOne.new(label)
+      configuration << obj
+      yield obj
+    end
+
+    def backup_file(label)
+      obj = FileAdmin::BackupFile.new(label)
+      configuration << obj
+      yield obj
+    end
+
+    def cleanup_file(label)
+      obj = FileAdmin::CleanupFile.new(label)
       configuration << obj
       yield obj
     end
