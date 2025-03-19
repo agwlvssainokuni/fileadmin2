@@ -39,7 +39,7 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
 
   let(:base_conf) { {
     "basedir" => "#{Dir.pwd}/testdir/src",
-    "suffix" => ".txt",
+    "arcname" => proc { |f| File.basename(f, ".txt") + ".zip" },
     "to_dir" => "#{Dir.pwd}/testdir/dest",
     "owner" => "#{%x{whoami}.chop}:#{%x{groups $(whoami) | awk '{print $1;}'}.chop}"
   } }
@@ -70,10 +70,10 @@ RSpec.describe FileAdmin::ArchiveOneToOne do
       it { expect(subject).not_to be_valid }
     end
 
-    context "suffixなし" do
-      let(:conf) { base_conf.merge("suffix" => nil) }
+    context "arcnameなし" do
+      let(:conf) { base_conf.merge("arcname" => nil) }
       let(:conf_collect) { base_conf_collect }
-      it { expect(subject).to be_valid }
+      it { expect(subject).not_to be_valid }
     end
 
     context "to_dirなし" do

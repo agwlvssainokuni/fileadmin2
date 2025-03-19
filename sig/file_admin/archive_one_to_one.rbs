@@ -21,7 +21,7 @@ module FileAdmin
     attr_reader logger: Helper::Logger
 
     attr_accessor basedir: String
-    attr_accessor suffix: String | nil
+    attr_accessor arcname: ^(String) -> String
     attr_accessor to_dir: String | nil
     attr_accessor owner: String | nil
     attr_accessor collector: _Collector

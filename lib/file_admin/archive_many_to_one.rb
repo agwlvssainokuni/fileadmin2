@@ -53,7 +53,7 @@ module FileAdmin
 
       Dir.chdir(basedir) {
 
-        files = collector.collect.select { |f| File.file?(f) }
+        files = collector.collect(time).select { |f| File.file?(f) }
         if files.empty?
           logger.debug("no files, skipped")
           return true
@@ -65,7 +65,7 @@ module FileAdmin
         )
 
         return false unless zip_with_moving_files(arcfile, files, dry_run)
-        logger.info("zip %s %s: OK", arcfile, files * " ") unless dry_run
+        logger.info("zip %s %s: OK", arcfile, files * " ")
         if owner.present?
           return false unless chown(owner, arcfile, dry_run)
         end

@@ -31,8 +31,9 @@ module FileAdmin
 
     attr_reader :logger
 
-    attr_accessor :basedir, :suffix, :to_dir, :owner
+    attr_accessor :basedir, :arcname, :to_dir, :owner
     validates :basedir, presence: true
+    validates :arcname, presence: true
 
     attr_accessor :collector
     validates :collector, presence: true
@@ -52,8 +53,7 @@ module FileAdmin
 
       Dir.chdir(basedir) {
 
-        files = collector.collect
-        files = files.select { |f| File.file?(f) }
+        files = collector.collect(time).select { |f| File.file?(f) }
         if files.empty?
           logger.debug("no files, skipped")
           return true
@@ -63,7 +63,7 @@ module FileAdmin
 
           arcfile = File.join(
             to_dir.present? ? to_dir : File.dirname(f),
-            File.basename(f, suffix.to_s) + ".zip"
+            arcname.call(File.basename(f))
           )
 
           return false unless zip_with_moving_files(arcfile, Array(f), dry_run)

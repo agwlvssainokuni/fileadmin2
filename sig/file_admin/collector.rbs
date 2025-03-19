@@ -28,8 +28,7 @@ module FileAdmin
     attr_accessor generation: Numeric
 
     def initialize: () -> void
-
-    def process: (Time, bool) -> bool
+    def collect: (Time) -> Array[String]
   end
 
   class CollectByThreshold
@@ -37,11 +36,10 @@ module FileAdmin
     attr_accessor extra_cond: ^(String) -> bool
     attr_accessor comparator: ^(String, String) -> Numeric
     attr_accessor slicer: ^(String) -> String
-    attr_accessor threshold: String
+    attr_accessor threshold: ^(Time) -> String
 
     def initialize: () -> void
-
-    def process: (Time, bool) -> bool
+    def collect: (Time) -> Array[String]
   end
 
 end

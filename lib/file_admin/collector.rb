@@ -41,7 +41,7 @@ module FileAdmin
       @generation = 0
     end
 
-    def collect
+    def collect(time)
       collect_target_by_generation(pattern, extra_cond, comparator, generation)
     end
   end
@@ -66,11 +66,11 @@ module FileAdmin
       @extra_cond = proc { true }
       @comparator = proc { |a, b| a <=> b }
       @slicer = proc { |a| a }
-      @threshold = ""
+      @threshold = proc { |t| t.strftime("%Y%m%d") }
     end
 
-    def collect
-      collect_target_by_threshold(pattern, extra_cond, comparator, slicer, threshold)
+    def collect(time)
+      collect_target_by_threshold(pattern, extra_cond, comparator, slicer, threshold.call(time))
     end
   end
 
