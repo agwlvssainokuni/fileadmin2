@@ -22,8 +22,8 @@ module FileAdmin
 
     attr_accessor basedir: String
     attr_accessor arcname: ^(String) -> String
-    attr_accessor to_dir: String | nil
-    attr_accessor owner: String | nil
+    attr_accessor to_dir: String?
+    attr_accessor owner: String?
     attr_accessor collector: _Collector
 
     def initialize: (String) -> void
