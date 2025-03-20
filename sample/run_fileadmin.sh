@@ -17,46 +17,4 @@
 
 basedir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
 
-cd .. && bundle exec exe/fileadmin $* <(
-cat <<__CONFIG__
-
-archive_one_to_one("一対一アーカイブ") do |c|
-  c.basedir = "${basedir}/0file"
-  c.arcname = proc { |a| File.basename(a, ".txt") + ".zip" }
-  c.to_dir = "${basedir}/1arch"
-  collect_by_generation do |t|
-    t.pattern = "foreach_*.txt"
-    t.extra_cond = proc { |a| /_(\\d{14})\\.txt\\z/ =~ a }
-  end
-end
-
-archive_many_to_one("集約アーカイブ") do |c|
-  c.basedir = "${basedir}/0file"
-  c.arcname = "aggregate_%Y%m%d%H%M%S.zip"
-  c.to_dir = "${basedir}/1arch"
-  collect_by_generation do |t|
-    t.pattern = "aggregate_*.txt"
-  end
-end
-
-backup_file("退避テスト") do |c|
-  c.basedir = "${basedir}/1arch"
-  c.to_dir = "${basedir}/2back"
-  collect_by_threshold do |t|
-    t.pattern = ["foreach_*.zip", "aggregate_*.zip"]
-    t.slicer = proc { |a| /_(\\d{14})\\.zip\\z/ =~ a ? \$1 : nil }
-    t.threshold = proc { |time| (time - 1.days).strftime("%Y%m%d%H%M%S") }
-  end
-end
-
-cleanup_file("削除テスト") do |c|
-  c.basedir = "${basedir}/2back"
-  collect_by_threshold do |t|
-    t.pattern = ["foreach_*.zip", "aggregate_*.zip"]
-    t.slicer = proc { |a| /_(\\d{14})\\.zip\\z/ =~ a ? \$1 : nil }
-    t.threshold = proc { |time| (time - 2.days).strftime("%Y%m%d%H%M%S") }
-  end
-end
-
-__CONFIG__
-)
+cd "${basedir}/.." && bundle exec "${basedir}/../exe/fileadmin" --console $* "${basedir}/sample_config.rb"
