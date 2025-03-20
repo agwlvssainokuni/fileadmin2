@@ -58,7 +58,7 @@ module FileAdmin
         end
 
         arcfile = File.join(
-          to_dir.present? ? to_dir : ".",
+          to_dir.present? ? to_dir.to_s : ".",
           time.strftime(arcname)
         )
 

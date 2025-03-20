@@ -60,7 +60,7 @@ module FileAdmin
         files.each { |f|
 
           arcfile = File.join(
-            to_dir.present? ? to_dir : File.dirname(f),
+            to_dir.present? ? to_dir.to_s : File.dirname(f),
             arcname.call(File.basename(f))
           )
 
