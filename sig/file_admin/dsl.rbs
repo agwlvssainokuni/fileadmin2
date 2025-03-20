@@ -17,6 +17,8 @@
 
 module FileAdmin
 
+  def self.configure: (^() -> void) -> void
+
   interface _Configuration
     def logger: () -> Helper::Logger
     def collector=: (_Collector) -> _Collector
@@ -26,13 +28,13 @@ module FileAdmin
   end
 
   class DSL
-    @configuration: Array[_Configuration]
-    def configuration: () -> Array[_Configuration]
-    def archive_many_to_one: (String) -> ArchiveManyToOne
-    def archive_one_to_one: (String) -> ArchiveOneToOne
-    def backup_file: (String) -> BackupFile
-    def cleanup_file: (String) -> CleanupFile
-    def collect_by_generation: () -> CollectByGeneration
-    def collect_by_threshold: () -> CollectByThreshold
+    @@configuration: Array[_Configuration]
+    def self.configuration: () -> Array[_Configuration]
+    def self.archive_many_to_one: (String) -> ArchiveManyToOne
+    def self.archive_one_to_one: (String) -> ArchiveOneToOne
+    def self.backup_file: (String) -> BackupFile
+    def self.cleanup_file: (String) -> CleanupFile
+    def self.collect_by_generation: () -> CollectByGeneration
+    def self.collect_by_threshold: () -> CollectByThreshold
   end
 end

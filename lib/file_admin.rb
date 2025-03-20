@@ -32,13 +32,12 @@ def file_admin
   opt.on("--[no-]console", "コンソール出力フラグ") { |p| FileAdmin::Helper::Logger.console_enabled = p }
   opt.parse!(ARGV)
 
-  dsl = FileAdmin::DSL.new
-  ARGF.readlines(nil).each do |doc|
-    dsl.instance_eval(doc)
+  ARGV.each do |file|
+    load file
   end
 
   ok = true
-  dsl.configuration.each do |conf|
+  FileAdmin::DSL.configuration.each do |conf|
     if opt_validate
       ok = false unless conf.valid?
       conf.errors.each do |error|

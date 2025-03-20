@@ -23,43 +23,48 @@ require "file_admin/cleanup_file"
 require "file_admin/collector"
 
 module FileAdmin
+
+  def self.configure(&block)
+    DSL.class_eval(&block)
+  end
+
   class DSL
 
-    def configuration
-      @configuration ||= []
+    def self.configuration
+      @@configuration ||= []
     end
 
-    def archive_many_to_one(label)
+    def self.archive_many_to_one(label)
       obj = FileAdmin::ArchiveManyToOne.new(label)
       configuration << obj
       yield obj
     end
 
-    def archive_one_to_one(label)
+    def self.archive_one_to_one(label)
       obj = FileAdmin::ArchiveOneToOne.new(label)
       configuration << obj
       yield obj
     end
 
-    def backup_file(label)
+    def self.backup_file(label)
       obj = FileAdmin::BackupFile.new(label)
       configuration << obj
       yield obj
     end
 
-    def cleanup_file(label)
+    def self.cleanup_file(label)
       obj = FileAdmin::CleanupFile.new(label)
       configuration << obj
       yield obj
     end
 
-    def collect_by_generation
+    def self.collect_by_generation
       obj = FileAdmin::CollectByGeneration.new
       configuration.last.collector = obj
       yield obj
     end
 
-    def collect_by_threshold
+    def self.collect_by_threshold
       obj = FileAdmin::CollectByThreshold.new
       configuration.last.collector = obj
       yield obj
